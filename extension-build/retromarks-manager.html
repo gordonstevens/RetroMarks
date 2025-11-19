@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RetroMarks</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="retromarks-styles.css">
+</head>
+<body>
+    <header role="banner">
+        <div class="header-left">
+            <h1 data-i18n="app_title">RetroMarks</h1>
+            <button id="theme-toggle" class="icon-btn" aria-label="Toggle Theme" title="Toggle Theme">
+                <svg id="icon-theme" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="header-search">
+            <label for="search" class="sr-only" data-i18n="search_placeholder">Search bookmarks</label>
+            <input type="text" id="search" class="search-box" placeholder="Search bookmarks..." aria-label="Search bookmarks">
+        </div>
+
+        <div class="header-right">
+            <div class="dropdown">
+                <button id="menu-btn" class="icon-btn" aria-label="Menu" aria-haspopup="true" aria-expanded="false">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </button>
+                <div id="main-menu" class="dropdown-menu hidden" role="menu">
+                    <button id="action-add-bookmark" class="menu-item" role="menuitem" data-i18n="menu_add_bookmark">Add new bookmark</button>
+                    <button id="action-add-folder" class="menu-item" role="menuitem" data-i18n="menu_add_folder">Add new folder</button>
+                    <hr class="menu-divider">
+                    <button id="action-sort" class="menu-item" role="menuitem" data-i18n="menu_sort_name">Sort by name (View)</button>
+                    <button id="action-toggle-date" class="menu-item" role="menuitem" data-i18n="menu_toggle_date">Show/Hide Date Column</button>
+                    <hr class="menu-divider">
+                    <button id="action-language" class="menu-item" role="menuitem" data-i18n="menu_language">Change Language</button>
+                    <button id="action-visit-site" class="menu-item" role="menuitem" data-i18n="menu_visit_site">Visit extension website</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="container">
+        <nav id="sidebar" aria-label="Folder Navigation">
+            <!-- Tree injected here -->
+        </nav>
+        <main id="content" aria-label="Bookmark List">
+            <table aria-labelledby="folder-title">
+                <caption id="folder-title" class="sr-only">Current Folder Items</caption>
+                <thead>
+                    <tr>
+                        <th class="col-icon" scope="col"><span class="sr-only">Icon</span></th>
+                        
+                        <th class="col-name sortable header-ctx" data-col="title" style="width: 40%;" scope="col">
+                            <div class="th-content">
+                                <span data-i18n="col_name">Name</span>
+                                <span class="sort-icon"></span>
+                            </div>
+                        </th>
+                        
+                        <th class="col-url sortable header-ctx" data-col="url" scope="col">
+                            <div class="th-content">
+                                <span data-i18n="col_url">URL</span>
+                                <span class="sort-icon"></span>
+                            </div>
+                        </th>
+                        
+                        <th class="col-date sortable header-ctx" data-col="date" style="width: 120px;" scope="col">
+                            <div class="th-content">
+                                <span data-i18n="col_date">Date</span>
+                                <span class="sort-icon"></span>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </main>
+    </div>
+
+    <!-- Custom Context Menu -->
+    <div id="context-menu" class="context-menu hidden" role="menu">
+        <!-- Item Actions (Right-click on Row/Tree Item) -->
+        <div class="menu-group group-item">
+            <div class="menu-item" id="menu-edit" role="menuitem" tabindex="0" data-i18n="ctx_edit">Edit</div>
+            <div class="menu-item" id="menu-delete" role="menuitem" tabindex="0" data-i18n="ctx_delete">Delete</div>
+        </div>
+        
+        <!-- Global Actions (Right-click on Whitespace) -->
+        <div class="menu-group group-global">
+            <div class="menu-item" id="menu-ctx-add-bookmark" role="menuitem" tabindex="0" data-i18n="menu_add_bookmark">Add new bookmark</div>
+            <div class="menu-item" id="menu-ctx-add-folder" role="menuitem" tabindex="0" data-i18n="menu_add_folder">Add new folder</div>
+        </div>
+        
+        <!-- Header Actions: Text (Name/URL) -->
+        <div class="menu-group group-header-text">
+            <div class="menu-item" id="menu-sort-asc" role="menuitem" tabindex="0" data-i18n="sort_asc">Sort by ascending</div>
+            <div class="menu-item" id="menu-sort-desc" role="menuitem" tabindex="0" data-i18n="sort_desc">Sort by descending</div>
+        </div>
+        
+        <!-- Header Actions: Date -->
+        <div class="menu-group group-header-date">
+            <div class="menu-item" id="menu-sort-newest" role="menuitem" tabindex="0" data-i18n="sort_newest">Sort by newest</div>
+            <div class="menu-item" id="menu-sort-oldest" role="menuitem" tabindex="0" data-i18n="sort_oldest">Sort by oldest</div>
+            <hr class="menu-divider">
+            <div class="menu-item" id="menu-hide-date" role="menuitem" tabindex="0" data-i18n="hide_column">Hide column</div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Edit/Add Modal -->
+    <dialog id="edit-modal" aria-labelledby="modal-title">
+        <form id="modal-form" method="dialog">
+            <h3 id="modal-title">Edit Item</h3>
+            <div class="form-group">
+                <label for="edit-name" data-i18n="label_name">Name:</label>
+                <input type="text" id="edit-name" required>
+            </div>
+            <div class="form-group" id="url-group">
+                <label for="edit-url" data-i18n="label_url">URL:</label>
+                <input type="url" id="edit-url">
+            </div>
+            <div class="modal-actions">
+                <!-- TYPE="BUTTON" prevents submission on Cancel -->
+                <button type="button" id="btn-cancel" class="btn" data-i18n="btn_cancel">Cancel</button>
+                <button type="submit" id="btn-save" class="btn btn-primary" data-i18n="btn_save">Save</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Confirmation Modal (Replaces Alert) -->
+    <dialog id="confirm-modal" class="small-modal">
+        <form method="dialog">
+            <h3 data-i18n="confirm_title">Confirm Action</h3>
+            <p id="confirm-message">Are you sure?</p>
+            <div class="modal-actions">
+                <button type="button" id="btn-confirm-cancel" class="btn" data-i18n="btn_cancel">Cancel</button>
+                <button type="button" id="btn-confirm-yes" class="btn btn-primary" data-i18n="btn_confirm">Yes, Delete</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Language Selection Modal -->
+    <dialog id="language-modal">
+        <h3 data-i18n="menu_language">Change Language</h3>
+        <div id="language-grid"></div>
+        <div class="modal-actions">
+            <button type="button" id="btn-lang-close" class="btn" data-i18n="btn_cancel">Close</button>
+        </div>
+    </dialog>
+
+    <script src="retromarks-app.js"></script>
+</body>
+</html>

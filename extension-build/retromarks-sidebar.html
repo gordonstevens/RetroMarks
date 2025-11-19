@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RetroMarks Sidebar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="retromarks-styles.css">
+    <style>
+        /* Inline critical overrides for Sidebar Mode to prevent flash of unstyled content */
+        body.mode-sidebar #container { flex-direction: column; }
+        body.mode-sidebar #sidebar { width: 100%; border-right: none; }
+        body.mode-sidebar #content { display: none; } 
+        body.mode-sidebar header { padding: 0 12px; height: 48px; }
+        body.mode-sidebar .header-search { flex: 1; margin: 0 8px; }
+        body.mode-sidebar .search-box { width: 100%; }
+        body.mode-sidebar .header-right { display: none; } /* Hide main menu in sidebar for simplicity */
+        body.mode-sidebar .header-left h1 { font-size: 16px; display: none; } /* Hide Title to save space */
+        body.mode-sidebar .header-left { gap: 4px; }
+        
+        /* Ensure toast shows above other elements in narrow view */
+        #toast-container { bottom: 12px; right: 12px; left: 12px; }
+        .toast { min-width: auto; width: auto; }
+    </style>
+</head>
+<body class="mode-sidebar">
+    <header role="banner">
+        <div class="header-left">
+            <!-- Theme Toggle only in Sidebar Header -->
+            <button id="theme-toggle" class="icon-btn" aria-label="Toggle Theme" title="Toggle Theme">
+                <svg id="icon-theme" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                    <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="header-search">
+            <input type="text" id="search" class="search-box" placeholder="Search..." aria-label="Search bookmarks">
+        </div>
+        
+        <!-- Sidebar Specific Add Button (since menu is hidden) -->
+        <div class="header-right-sidebar">
+            <button id="sidebar-add" class="icon-btn" title="Add Bookmark">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                   <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <div id="container">
+        <nav id="sidebar" aria-label="Folder Navigation">
+            <!-- Tree injected here -->
+        </nav>
+        <!-- Table is hidden via CSS in sidebar mode -->
+        <main id="content"></main>
+    </div>
+
+    <!-- Context Menu -->
+    <div id="context-menu" class="context-menu hidden" role="menu">
+        <!-- Item Actions -->
+        <div class="menu-group group-item">
+            <div class="menu-item" id="menu-edit" role="menuitem" tabindex="0" data-i18n="ctx_edit">Edit</div>
+            <div class="menu-item" id="menu-delete" role="menuitem" tabindex="0" data-i18n="ctx_delete">Delete</div>
+        </div>
+        
+        <!-- Global Actions (Right-click on Whitespace) -->
+        <div class="menu-group group-global">
+            <div class="menu-item" id="menu-ctx-add-bookmark" role="menuitem" tabindex="0" data-i18n="menu_add_bookmark">Add new bookmark</div>
+            <div class="menu-item" id="menu-ctx-add-folder" role="menuitem" tabindex="0" data-i18n="menu_add_folder">Add new folder</div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Edit/Add Modal -->
+    <dialog id="edit-modal">
+        <form id="modal-form" method="dialog">
+            <h3 id="modal-title">Edit</h3>
+            <div class="form-group">
+                <label for="edit-name" data-i18n="label_name">Name:</label>
+                <input type="text" id="edit-name" required>
+            </div>
+            <div class="form-group" id="url-group">
+                <label for="edit-url" data-i18n="label_url">URL:</label>
+                <input type="url" id="edit-url">
+            </div>
+            <div class="modal-actions">
+                <button type="button" id="btn-cancel" class="btn" formnovalidate data-i18n="btn_cancel">Cancel</button>
+                <button type="submit" id="btn-save" class="btn btn-primary" data-i18n="btn_save">Save</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Confirm Modal -->
+    <dialog id="confirm-modal" class="small-modal">
+        <form method="dialog">
+            <h3 data-i18n="confirm_title">Confirm</h3>
+            <p id="confirm-message">Are you sure?</p>
+            <div class="modal-actions">
+                <button type="button" id="btn-confirm-cancel" class="btn" data-i18n="btn_cancel">Cancel</button>
+                <button type="button" id="btn-confirm-yes" class="btn btn-primary" data-i18n="btn_confirm">Yes</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script src="retromarks-app.js"></script>
+</body>
+</html>
