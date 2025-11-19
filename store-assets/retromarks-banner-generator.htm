@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RetroMarks Banner Generator</title>
+    <style>
+        body { font-family: "Segoe UI", sans-serif; background: #333; color: white; text-align: center; padding: 20px; }
+        canvas { border: 2px solid #555; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 100%; height: auto; }
+        h1 { font-weight: 300; margin-bottom: 10px; }
+        p { color: #aaa; margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+
+    <h1>Store Banner Generator</h1>
+    <p>Right-click the image below and "Save Image As..."</p>
+    
+    <canvas id="banner" width="1400" height="560"></canvas>
+
+    <script>
+        const ctx = document.getElementById('banner').getContext('2d');
+        const width = 1400;
+        const height = 560;
+
+        // --- 1. Background (Slate 50) ---
+        ctx.fillStyle = '#f8fafc'; 
+        ctx.fillRect(0, 0, width, height);
+
+        // --- 2. Subtle Grid Pattern (Retro Vibe) ---
+        ctx.strokeStyle = '#e2e8f0'; // Slate 200
+        ctx.lineWidth = 2;
+        const gridSize = 40;
+        
+        ctx.beginPath();
+        for(let x = 0; x <= width; x += gridSize) {
+            ctx.moveTo(x, 0); ctx.lineTo(x, height);
+        }
+        for(let y = 0; y <= height; y += gridSize) {
+            ctx.moveTo(0, y); ctx.lineTo(width, y);
+        }
+        ctx.stroke();
+
+        // --- 3. The Icon (Left Side) ---
+        // We scale the SVG path from 24px -> 360px (Scale 15x)
+        ctx.save();
+        ctx.translate(120, 100); // Position X, Y
+        ctx.scale(15, 15); 
+
+        // Folder Path
+        const pFolder = new Path2D("M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z");
+        ctx.fillStyle = '#FBC02D'; // Classic Folder Yellow
+        ctx.fill(pFolder);
+        ctx.strokeStyle = '#F57F17'; // Darker Border
+        ctx.lineWidth = 0.5;
+        ctx.stroke(pFolder);
+
+        // Bookmark Ribbon Path (Updated to Green for v1.9 Theme)
+        const pRibbon = new Path2D("M15 10v7l-2.5-1.5L10 17v-7h5z");
+        ctx.fillStyle = '#16a34a'; // Green 600 (Primary Action Color)
+        ctx.fill(pRibbon);
+        
+        // Shine/Highlight
+        const pShine = new Path2D("M4 6h6l2 2h8v1H4V6z");
+        ctx.fillStyle = "rgba(255,255,255,0.3)";
+        ctx.fill(pShine);
+        ctx.restore();
+
+        // --- 4. Typography ---
+        
+        // "RetroMarks" Title
+        ctx.fillStyle = '#0f172a'; // Slate 900
+        ctx.font = 'bold 130px "Segoe UI", sans-serif';
+        ctx.textBaseline = 'top';
+        
+        // Text Shadow for depth
+        ctx.shadowColor = "rgba(0,0,0,0.1)";
+        ctx.shadowBlur = 4;
+        ctx.shadowOffsetX = 2;
+        ctx.shadowOffsetY = 4;
+        
+        ctx.fillText("RetroMarks", 520, 160);
+
+        // Tagline
+        ctx.shadowColor = "transparent"; // Reset shadow
+        ctx.fillStyle = '#475569'; // Slate 600
+        ctx.font = '500 48px "Segoe UI", sans-serif';
+        ctx.fillText("Fast. Accessible. Private.", 530, 310);
+
+        // Version Tag (Optional badge style)
+        ctx.fillStyle = '#dcfce7'; // Green 100
+        ctx.beginPath();
+        ctx.roundRect(530, 390, 180, 50, 8);
+        ctx.fill();
+        
+        ctx.fillStyle = '#166534'; // Green 800
+        ctx.font = 'bold 24px "Segoe UI", sans-serif';
+        ctx.fillText("v1.0 Beaver", 555, 402);
+
+    </script>
+</body>
+</html>

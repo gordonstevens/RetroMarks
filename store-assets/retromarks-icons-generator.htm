@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RetroMarks Icon Generator</title>
+    <style>
+        body { font-family: "Segoe UI", sans-serif; padding: 40px; background: #f0f0f0; text-align: center; }
+        .container { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .icon-row { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 20px; width: 450px; }
+        canvas { border: 1px dashed #ccc; }
+        p { margin: 0; color: #666; font-size: 14px; }
+        h1 { color: #333; }
+    </style>
+</head>
+<body>
+
+    <h1>RetroMarks Icon Generator</h1>
+    <p>Right-click images -> "Save Image As..." -> Use filenames in bold.</p>
+
+    <div class="container">
+        <div class="icon-row">
+            <canvas id="c128" width="128" height="128"></canvas>
+            <div><strong>retromarks-icon128.png</strong><br><small>Store & Install</small></div>
+        </div>
+        <div class="icon-row">
+            <canvas id="c48" width="48" height="48"></canvas>
+            <div><strong>retromarks-icon48.png</strong><br><small>Management Page</small></div>
+        </div>
+        <div class="icon-row">
+            <canvas id="c32" width="32" height="32"></canvas>
+            <div><strong>retromarks-icon32.png</strong><br><small>High-DPI Toolbar</small></div>
+        </div>
+        <div class="icon-row">
+            <canvas id="c16" width="16" height="16"></canvas>
+            <div><strong>retromarks-icon16.png</strong><br><small>Standard Toolbar</small></div>
+        </div>
+    </div>
+
+    <script>
+        const svgData = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" fill="#FBC02D" stroke="#F57F17" stroke-width="1"/>
+            <path d="M15 10v7l-2.5-1.5L10 17v-7h5z" fill="#16a34a" stroke="#15803d" stroke-width="0.5"/>
+            <path d="M4 6h6l2 2h8v1H4V6z" fill="white" fill-opacity="0.3"/>
+        </svg>`;
+
+        function renderIcon(canvasId, size) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+            const url = URL.createObjectURL(svgBlob);
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0, size, size);
+                URL.revokeObjectURL(url);
+            };
+            img.src = url;
+        }
+        renderIcon('c128', 128);
+        renderIcon('c48', 48);
+        renderIcon('c32', 32);
+        renderIcon('c16', 16);
+    </script>
+</body>
+</html>
