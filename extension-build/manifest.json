@@ -2,14 +2,13 @@
   "manifest_version": 3,
   "name": "RetroMarks Manager",
   "short_name": "RetroMarks",
-  "version": "1.0",
-  "version_name": "Beaver 1.0",
-  "description": "Fast and accessible bookmark manager",
+  "version": "1.0.1",
+  "version_name": "Beaver",
+  "description": "Fast and accessible bookmark manager.",
   "author": "Gordon Stevens",
   "permissions": [
     "bookmarks",
     "favicon",
-    "storage",
     "sidePanel"
   ],
   "action": {
